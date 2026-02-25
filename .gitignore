@@ -1,0 +1,13 @@
+// ignore go build files
+*.exe
+*.dll
+*.so
+*.dylib
+// ignore test output
+*.out
+// ignore vendor directory
+vendor/
+// ignore IDE files
+.idea/
+.vscode/
+/tmp
