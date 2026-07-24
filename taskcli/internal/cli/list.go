@@ -1,9 +1,18 @@
 package cli
 
 import (
-	"fmt"
+	"log"
+	"taskcli/internal/task"
 )
 
-func newListCommand() {
-	fmt.Println("Comando listar")
+func newListCommand(taskService *task.Service) {
+	tasks, err := taskService.ListTasks()
+
+	if err != nil {
+		log.Fatal("Error al listar las tareas error: ", err)
+	}
+
+	for _, taskItem := range tasks {
+		log.Printf("Tarea %s %s", taskItem.ID, taskItem.Name)
+	}
 }
