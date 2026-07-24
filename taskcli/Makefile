@@ -4,7 +4,7 @@ export
 
 MIGRATION_PATH ?= "./db/migrations"
 
-DB_URL="sqlite3://$(DB_PATH)"
+DB_URL?="sqlite3://$(DB_PATH)"
 
 check-migrate:
 	@which migrate >/dev/null 2>&1 || { \
@@ -19,6 +19,10 @@ migrate-up: check-migrate
 migrate-down: check-migrate
 	@echo "Rollback migrations"
 	migrate -database $(DB_URL) -path $(MIGRATION_PATH) down 1
+
+migrate-create: check-migrate
+	@read -p "Migration name: ", NAME; \
+	migrate create -ext sql -dir $(MIGRATION_PATH) -seq $$NAME
 
 create-db:
 	@test -f $(DB_PATH) || { \
