@@ -12,6 +12,11 @@ func newListCommand(taskService *task.Service) {
 		log.Fatal("Error al listar las tareas error: ", err)
 	}
 
+	if len(tasks) == 0 {
+		log.Println("No hay tareas")
+		return
+	}
+
 	for _, taskItem := range tasks {
 		log.Printf("Tarea %s %s", taskItem.ID, taskItem.Name)
 	}

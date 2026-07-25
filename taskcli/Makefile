@@ -28,6 +28,6 @@ create-db:
 	@test -f $(DB_PATH) || { \
 		echo "Creating database"; \
 		sqlite3 $(DB_PATH) "VACUUM;"; \
-		echo "Database createde"; \
+		echo "Database created"; \
 	}
 	@test -f $(DB_PAT) && echo "Database already exist"

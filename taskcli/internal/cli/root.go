@@ -10,8 +10,11 @@ import (
 )
 
 func NewRootCommand(s storage.Store, taskService *task.Service) {
-	subCommand := flag.NewFlagSet("subcommand", flag.ExitOnError)
-	taskName := subCommand.String("name", "", "Nombre de la tarea")
+	createSubCommand := flag.NewFlagSet("createSubcommand", flag.ExitOnError)
+	taskName := createSubCommand.String("name", "", "Nombre de la tarea")
+
+	deleteSubCommand := flag.NewFlagSet("deleteSubCommand", flag.ExitOnError)
+	taskId := deleteSubCommand.Int("id", 0, "Id de la tarea")
 
 	if len(os.Args) < 2 {
 		fmt.Printf("Mostrando ayudame de cli\n")
@@ -22,8 +25,11 @@ func NewRootCommand(s storage.Store, taskService *task.Service) {
 	case "list":
 		newListCommand(taskService)
 	case "create":
-		subCommand.Parse(os.Args[2:])
+		createSubCommand.Parse(os.Args[2:])
 		createCommand(taskService, taskName)
+	case "delete":
+		deleteSubCommand.Parse(os.Args[2:])
+		deleteCommand(taskService, taskId)
 	default:
 		log.Printf("Comando `%s` no soportado\n", os.Args[1])
 	}
