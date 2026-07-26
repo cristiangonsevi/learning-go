@@ -18,6 +18,6 @@ func newListCommand(taskService *task.Service) {
 	}
 
 	for _, taskItem := range tasks {
-		log.Printf("Tarea %s %s", taskItem.ID, taskItem.Name)
+		log.Printf("Tarea %v %s", taskItem.ID, taskItem.Name)
 	}
 }
