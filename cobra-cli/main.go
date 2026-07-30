@@ -16,7 +16,7 @@ func main() {
 	store, err := sqlite.New(config.DB_PATH)
 
 	if err != nil {
-		log.Fatal("Error al iniciar la base de datos")
+		log.Fatal("Error al iniciar la base de datos ", err)
 	}
 
 	service := task.NewService(store)
