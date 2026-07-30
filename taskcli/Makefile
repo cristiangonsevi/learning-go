@@ -17,8 +17,8 @@ migrate-up: check-migrate
 	migrate -database $(DB_URL) -path $(MIGRATION_PATH) up
 
 migrate-down: check-migrate
-	@echo "Rollback migrations"
-	migrate -database $(DB_URL) -path $(MIGRATION_PATH) down 1
+	@echo "Rollback migrations with config $(MIGRATION_PATH) $(DB_URL)"
+	migrate -source $(MIGRATION_PATH) -database $(DB_URL) down 1
 
 migrate-create: check-migrate
 	@read -p "Migration name: ", NAME; \

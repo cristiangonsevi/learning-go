@@ -3,7 +3,7 @@ include .env
 export
 
 BIN_FILENAME ?= "cli"
-MIGRATION_DIR ?= "./db/migrations"
+MIGRATION_DIR ?= "file://./db/migrations"
 DB_URL ?= "sqlite3://$(DB_PATH)"
 
 build:
@@ -37,8 +37,8 @@ db-migrate-create: check-migrate
 
 db-migrate-up: check-migrate
 	@echo "Running migrations"
-	@migrate -database $(DB_URL) -path $(MIGRATION_DIR) up
+	migrate -source $(MIGRATION_DIR) -database $(DB_URL) up
 
 db-migrate-down:
-	@echo "Running rollback"
-	@migrate -database $(DB_URL) -path $(MIGRATION_DIR) dow 1
+	@echo "Rollback migrations with config $(MIGRATION_DIR) $(DB_URL)"
+	migrate -source $(MIGRATION_DIR) -database $(DB_URL) down 1

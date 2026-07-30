@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"cobra-cli/task"
+	"cobra-cli/internal/task"
 	"fmt"
 	"os"
 

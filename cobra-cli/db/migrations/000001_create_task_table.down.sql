@@ -1,1 +1,1 @@
-DROP IF EXISTS tasks
+DROP TABLE IF EXISTS tasks

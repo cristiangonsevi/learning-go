@@ -9,7 +9,6 @@ var listCommand = &cobra.Command{
 	Short: "Lista todos",
 	Long:  "Muestra el listado de comandos",
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
 		service.List()
 	},
 }

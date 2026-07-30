@@ -1,11 +1,10 @@
 package main
 
 import (
-	"cobra-cli/cmd"
 	"cobra-cli/config"
-	"cobra-cli/storage/sqlite"
-	"cobra-cli/task"
-	"fmt"
+	"cobra-cli/internal/cmd"
+	"cobra-cli/internal/storage/sqlite"
+	"cobra-cli/internal/task"
 	"log"
 )
 
@@ -20,8 +19,6 @@ func main() {
 	}
 
 	service := task.NewService(store)
-
-	fmt.Println(service)
 
 	cmd.Execute(service)
 }

@@ -1,6 +1,7 @@
-CREATE TABLE tasks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    status VARCHAR(20) DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- 000001_create_tasks_table.up.sql
+CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- ← SQLite
+    name TEXT NOT NULL,                    -- ← SQLite
+    status TEXT DEFAULT 'pending',         -- ← SQLite
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP  -- ← SQLite
 );
