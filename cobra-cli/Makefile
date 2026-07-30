@@ -31,7 +31,8 @@ db-create: check-migrate
 	@test -f $(DB_PATH) && echo "Database already exist"
 
 db-migrate-create: check-migrate
-	@read -p "Migration name: " NAME
+	@read -p "Migration name: " NAME; \
+	echo "Migration name $(NAME)"; \
 	migrate create -ext sql -dir $(MIGRATION_DIR) -seq $$NAME
 
 db-migrate-up: check-migrate
