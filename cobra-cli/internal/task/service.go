@@ -3,8 +3,6 @@ package task
 import (
 	"cobra-cli/internal/model"
 	"cobra-cli/internal/storage"
-	"fmt"
-	"log"
 )
 
 type Service struct {
@@ -15,14 +13,14 @@ func NewService(store storage.Storage) *Service {
 	return &Service{store}
 }
 
-func (s *Service) List() {
-	fmt.Println("Listar tareas")
+func (s *Service) List() ([]model.TaskModel, error) {
 	tasks, err := s.store.List()
 
 	if err != nil {
-		log.Fatal("Error retrieving data: ", err)
+		return nil, err
 	}
-	log.Println("Tasks: ", tasks)
+
+	return tasks, nil
 }
 
 func (s *Service) CreateTask(newTask model.TaskModel) error {
