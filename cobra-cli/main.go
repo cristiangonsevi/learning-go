@@ -10,13 +10,19 @@ import (
 
 func main() {
 
-	config := config.Load()
-
-	store, err := sqlite.New(config.DB_PATH)
+	config, err := config.Load()
 
 	if err != nil {
-		log.Fatal("Error al iniciar la base de datos ", err)
+		log.Fatal("Error al cargar variables de entorno", err)
 	}
+
+	store, errDb := sqlite.New(config.DB_PATH)
+
+	if errDb != nil {
+		log.Fatal("Error al iniciar la base de datos ", errDb)
+	}
+
+	defer store.Close()
 
 	service := task.NewService(store)
 

@@ -115,3 +115,7 @@ func (store *Store) Delete(id int) error {
 	}
 	return nil
 }
+
+func (store *Store) Close() {
+	store.db.Close()
+}
