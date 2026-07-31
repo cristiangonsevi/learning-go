@@ -3,6 +3,7 @@ package sqlite
 import (
 	"cobra-cli/internal/model"
 	"database/sql"
+	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -51,6 +52,57 @@ func (store *Store) List() ([]model.TaskModel, error) {
 
 func (store *Store) Create(newTask model.TaskModel) error {
 	_, err := store.db.Exec("INSERT INTO tasks (name, status, created_at) VALUES (?, ?, ?)", newTask.Name, newTask.Status, newTask.CreatedAt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (store *Store) Find(id int) (*model.TaskModel, error) {
+
+	var taskItem = model.TaskModel{}
+
+	err := store.db.QueryRow("SELECT id, name, status, created_at FROM tasks WHERE id = ?", id).Scan(&taskItem.ID, &taskItem.Name, &taskItem.Status, &taskItem.CreatedAt)
+
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("No existe tarea con id = %v", id)
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("Error obteniendo tarea\n")
+	}
+
+	return &taskItem, nil
+}
+
+func (store *Store) Update(id int, data model.TaskModel) error {
+
+	taskItem, err := store.Find(id)
+
+	if err != nil {
+		return err
+	}
+
+	if data.Name != "" {
+		taskItem.Name = data.Name
+	}
+
+	if data.Status != "" {
+		taskItem.Status = data.Status
+	}
+
+	_, errUpdate := store.db.Exec("UPDATE tasks (name, status) VALUES(?, ?)", taskItem.Name, taskItem.Status)
+
+	if errUpdate != nil {
+		return errUpdate
+	}
+
+	return nil
+}
+
+func (store *Store) Delete(id int) error {
+	_, err := store.db.Exec("DELETE FROM tasks WHERE id = ?", id)
+
 	if err != nil {
 		return err
 	}

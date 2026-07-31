@@ -30,3 +30,24 @@ func (s *Service) CreateTask(newTask model.TaskModel) error {
 	}
 	return nil
 }
+
+func (s *Service) UpdateTask(id int, data model.TaskModel) error {
+
+	err := s.store.Update(id, data)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) DeleteTask(id int) error {
+	err := s.store.Delete(id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
