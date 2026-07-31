@@ -1,11 +1,9 @@
 package cmd
 
 import (
+	"cobra-cli/internal/cmd/printer"
 	"log"
-	"os"
 
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/pawelszydlo/humanize"
 	"github.com/spf13/cobra"
 )
 
@@ -19,21 +17,7 @@ var listCommand = &cobra.Command{
 			log.Fatal("Error retrieving data ", err)
 		}
 
-		h, _ := humanize.New("en")
-
-		tbl := table.NewWriter()
-
-		tbl.SetStyle(table.StyleLight)
-
-		tbl.SetOutputMirror(os.Stdout)
-
-		tbl.AppendHeader(table.Row{"ID", "Name", "Status", "Created At"})
-
-		for _, taskItem := range tasks {
-			tbl.AppendRow(table.Row{taskItem.ID, taskItem.Name, taskItem.Status, h.TimeDiffNow(taskItem.CreatedAt, false)})
-		}
-
-		tbl.Render()
+		printer.New().PrintTask(tasks)
 
 	},
 }

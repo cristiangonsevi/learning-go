@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cobra-cli/internal/cmd/printer"
 	"cobra-cli/internal/model"
 	"log"
 	"time"
@@ -27,7 +28,9 @@ var createCommand = cobra.Command{
 			log.Fatal("Error creating new task ", err)
 		}
 
-		log.Println("Name ", name, status)
+		tasks, _ := service.List()
+
+		printer.New().PrintTask(tasks)
 	},
 }
 

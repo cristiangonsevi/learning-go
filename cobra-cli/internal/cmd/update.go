@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cobra-cli/internal/cmd/printer"
 	"cobra-cli/internal/model"
 	"fmt"
 	"log"
@@ -35,6 +36,9 @@ var updateCommand = cobra.Command{
 		if err != nil {
 			log.Fatal("Error actualizando tarea ", err)
 		}
+
+		tasks, _ := service.List()
+		printer.New().PrintTask(tasks)
 	},
 }
 

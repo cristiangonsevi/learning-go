@@ -91,7 +91,7 @@ func (store *Store) Update(id int, data model.TaskModel) error {
 		taskItem.Status = data.Status
 	}
 
-	_, errUpdate := store.db.Exec("UPDATE tasks (name, status) VALUES(?, ?)", taskItem.Name, taskItem.Status)
+	_, errUpdate := store.db.Exec("UPDATE tasks SET name = ?, status = ? WHERE id = ?", taskItem.Name, taskItem.Status, taskItem.ID)
 
 	if errUpdate != nil {
 		return errUpdate
@@ -101,10 +101,17 @@ func (store *Store) Update(id int, data model.TaskModel) error {
 }
 
 func (store *Store) Delete(id int) error {
-	_, err := store.db.Exec("DELETE FROM tasks WHERE id = ?", id)
+
+	_, err := store.Find(id)
 
 	if err != nil {
 		return err
+	}
+
+	_, err2 := store.db.Exec("DELETE FROM tasks WHERE id = ?", id)
+
+	if err2 != nil {
+		return err2
 	}
 	return nil
 }

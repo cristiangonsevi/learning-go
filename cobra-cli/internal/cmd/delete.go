@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cobra-cli/internal/cmd/printer"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -17,6 +18,10 @@ var deleteCommand = cobra.Command{
 		if err != nil {
 			log.Fatal("Error al borrar tarea ", err)
 		}
+
+		tasks, _ := service.List()
+
+		printer.New().PrintTask(tasks)
 	},
 }
 
