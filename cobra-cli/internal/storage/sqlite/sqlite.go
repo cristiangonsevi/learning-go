@@ -36,11 +36,12 @@ func (store *Store) List() ([]model.TaskModel, error) {
 	for rows.Next() {
 		var taskItem model.TaskModel
 		err := rows.Scan(&taskItem.ID, &taskItem.Name, &taskItem.Status, &taskItem.CreatedAt)
-		taskItems = append(taskItems, taskItem)
 
 		if err != nil {
 			return nil, err
 		}
+
+		taskItems = append(taskItems, taskItem)
 	}
 
 	if err = rows.Err(); err != nil {

@@ -21,7 +21,7 @@ var updateCommand = cobra.Command{
 		status, _ := cmd.Flags().GetString("status")
 
 		if name == "" && status == "" {
-			fmt.Println("Debes propocionar los valores de al menos nombre o estado")
+			fmt.Println("Debes proporcionar los valores de al menos nombre o estado")
 			cmd.Help()
 			return
 		}
