@@ -13,7 +13,7 @@ var updateCommand = cobra.Command{
 	Use:   "update",
 	Short: "Comando para actualizar nombre o estado de tarea",
 	Run: func(cmd *cobra.Command, args []string) {
-
+		ctx := cmd.Context()
 		id, _ := cmd.Flags().GetInt("id")
 
 		name, _ := cmd.Flags().GetString("name")
@@ -31,13 +31,13 @@ var updateCommand = cobra.Command{
 			Status: status,
 		}
 
-		err := service.UpdateTask(id, taskItem)
+		err := service.UpdateTask(ctx, id, taskItem)
 
 		if err != nil {
 			log.Fatal("Error actualizando tarea ", err)
 		}
 
-		tasks, _ := service.List()
+		tasks, _ := service.List(ctx)
 		printer.New().PrintTask(tasks)
 	},
 }

@@ -13,6 +13,7 @@ var createCommand = cobra.Command{
 	Use:   "create",
 	Short: "Create a new task",
 	Run: func(cmd *cobra.Command, args []string) {
+		ctx := cmd.Context()
 		name, _ := cmd.Flags().GetString("name")
 		status, _ := cmd.Flags().GetString("status")
 
@@ -22,13 +23,13 @@ var createCommand = cobra.Command{
 			CreatedAt: time.Now(),
 		}
 
-		err := service.CreateTask(newTask)
+		err := service.CreateTask(ctx, newTask)
 
 		if err != nil {
 			log.Fatal("Error creating new task ", err)
 		}
 
-		tasks, _ := service.List()
+		tasks, _ := service.List(ctx)
 
 		printer.New().PrintTask(tasks)
 	},

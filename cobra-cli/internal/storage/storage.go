@@ -1,10 +1,13 @@
 package storage
 
-import "cobra-cli/internal/model"
+import (
+	"cobra-cli/internal/model"
+	"context"
+)
 
 type Storage interface {
-	List() ([]model.TaskModel, error)
-	Create(model.TaskModel) error
-	Update(int, model.TaskModel) error
-	Delete(int) error
+	List(context.Context) ([]model.TaskModel, error)
+	Create(context.Context, model.TaskModel) error
+	Update(context.Context, int, model.TaskModel) error
+	Delete(context.Context, int) error
 }

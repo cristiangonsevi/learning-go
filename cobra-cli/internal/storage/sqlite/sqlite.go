@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"cobra-cli/internal/model"
+	"context"
 	"database/sql"
 	"fmt"
 
@@ -23,9 +24,9 @@ func New(dbPath string) (*Store, error) {
 	return &Store{db}, nil
 }
 
-func (store *Store) List() ([]model.TaskModel, error) {
+func (store *Store) List(ctx context.Context) ([]model.TaskModel, error) {
 	var taskItems []model.TaskModel
-	rows, err := store.db.Query("SELECT id, name, status, created_at FROM tasks")
+	rows, err := store.db.QueryContext(ctx, "SELECT id, name, status, created_at FROM tasks")
 
 	if err != nil {
 		return nil, err
@@ -51,19 +52,19 @@ func (store *Store) List() ([]model.TaskModel, error) {
 	return taskItems, nil
 }
 
-func (store *Store) Create(newTask model.TaskModel) error {
-	_, err := store.db.Exec("INSERT INTO tasks (name, status, created_at) VALUES (?, ?, ?)", newTask.Name, newTask.Status, newTask.CreatedAt)
+func (store *Store) Create(ctx context.Context, newTask model.TaskModel) error {
+	_, err := store.db.ExecContext(ctx, "INSERT INTO tasks (name, status, created_at) VALUES (?, ?, ?)", newTask.Name, newTask.Status, newTask.CreatedAt)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (store *Store) Find(id int) (*model.TaskModel, error) {
+func (store *Store) Find(ctx context.Context, id int) (*model.TaskModel, error) {
 
 	var taskItem = model.TaskModel{}
 
-	err := store.db.QueryRow("SELECT id, name, status, created_at FROM tasks WHERE id = ?", id).Scan(&taskItem.ID, &taskItem.Name, &taskItem.Status, &taskItem.CreatedAt)
+	err := store.db.QueryRowContext(ctx, "SELECT id, name, status, created_at FROM tasks WHERE id = ?", id).Scan(&taskItem.ID, &taskItem.Name, &taskItem.Status, &taskItem.CreatedAt)
 
 	if err == sql.ErrNoRows {
 		return nil, fmt.Errorf("No existe tarea con id = %v", id)
@@ -76,9 +77,9 @@ func (store *Store) Find(id int) (*model.TaskModel, error) {
 	return &taskItem, nil
 }
 
-func (store *Store) Update(id int, data model.TaskModel) error {
+func (store *Store) Update(ctx context.Context, id int, data model.TaskModel) error {
 
-	taskItem, err := store.Find(id)
+	taskItem, err := store.Find(ctx, id)
 
 	if err != nil {
 		return err
@@ -92,7 +93,7 @@ func (store *Store) Update(id int, data model.TaskModel) error {
 		taskItem.Status = data.Status
 	}
 
-	_, errUpdate := store.db.Exec("UPDATE tasks SET name = ?, status = ? WHERE id = ?", taskItem.Name, taskItem.Status, taskItem.ID)
+	_, errUpdate := store.db.ExecContext(ctx, "UPDATE tasks SET name = ?, status = ? WHERE id = ?", taskItem.Name, taskItem.Status, taskItem.ID)
 
 	if errUpdate != nil {
 		return errUpdate
@@ -101,15 +102,15 @@ func (store *Store) Update(id int, data model.TaskModel) error {
 	return nil
 }
 
-func (store *Store) Delete(id int) error {
+func (store *Store) Delete(ctx context.Context, id int) error {
 
-	_, err := store.Find(id)
+	_, err := store.Find(ctx, id)
 
 	if err != nil {
 		return err
 	}
 
-	_, err2 := store.db.Exec("DELETE FROM tasks WHERE id = ?", id)
+	_, err2 := store.db.ExecContext(ctx, "DELETE FROM tasks WHERE id = ?", id)
 
 	if err2 != nil {
 		return err2

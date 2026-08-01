@@ -12,7 +12,10 @@ var listCommand = &cobra.Command{
 	Short: "Lista todos",
 	Long:  "Muestra el listado de comandos",
 	Run: func(cmd *cobra.Command, args []string) {
-		tasks, err := service.List()
+
+		ctx := cmd.Context()
+
+		tasks, err := service.List(ctx)
 		if err != nil {
 			log.Fatal("Error retrieving data ", err)
 		}
