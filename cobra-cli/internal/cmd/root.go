@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"cobra-cli/internal/task"
+	"context"
 	"fmt"
 	"os"
 
@@ -19,9 +20,9 @@ var rootCommand = &cobra.Command{
 	},
 }
 
-func Execute(s *task.Service) {
+func Execute(ctx context.Context, s *task.Service) {
 	service = s
-	if err := rootCommand.Execute(); err != nil {
+	if err := rootCommand.ExecuteContext(ctx); err != nil {
 		fmt.Println("Error al ejecutar el cli")
 		os.Exit(1)
 	}

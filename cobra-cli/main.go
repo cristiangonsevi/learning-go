@@ -5,10 +5,17 @@ import (
 	"cobra-cli/internal/cmd"
 	"cobra-cli/internal/storage/sqlite"
 	"cobra-cli/internal/task"
+	"context"
 	"log"
+	"os"
+	"os/signal"
 )
 
 func main() {
+
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+
+	defer cancel()
 
 	config, err := config.Load()
 
@@ -26,5 +33,5 @@ func main() {
 
 	service := task.NewService(store)
 
-	cmd.Execute(service)
+	cmd.Execute(ctx, service)
 }
