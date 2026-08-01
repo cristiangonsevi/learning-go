@@ -3,19 +3,19 @@ package sqlite
 import (
 	"cobra-cli/internal/model"
 	"context"
-	"database/sql"
-	"fmt"
+
+	"github.com/jmoiron/sqlx"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type Store struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
 func New(dbPath string) (*Store, error) {
 
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sqlx.Open("sqlite3", dbPath)
 
 	if err != nil {
 		return nil, err
@@ -26,26 +26,9 @@ func New(dbPath string) (*Store, error) {
 
 func (store *Store) List(ctx context.Context) ([]model.TaskModel, error) {
 	var taskItems []model.TaskModel
-	rows, err := store.db.QueryContext(ctx, "SELECT id, name, status, created_at FROM tasks")
+	err := store.db.SelectContext(ctx, &taskItems, "SELECT id, name, status, created_at FROM tasks")
 
 	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		var taskItem model.TaskModel
-		err := rows.Scan(&taskItem.ID, &taskItem.Name, &taskItem.Status, &taskItem.CreatedAt)
-
-		if err != nil {
-			return nil, err
-		}
-
-		taskItems = append(taskItems, taskItem)
-	}
-
-	if err = rows.Err(); err != nil {
 		return nil, err
 	}
 
@@ -64,14 +47,10 @@ func (store *Store) Find(ctx context.Context, id int) (*model.TaskModel, error) 
 
 	var taskItem = model.TaskModel{}
 
-	err := store.db.QueryRowContext(ctx, "SELECT id, name, status, created_at FROM tasks WHERE id = ?", id).Scan(&taskItem.ID, &taskItem.Name, &taskItem.Status, &taskItem.CreatedAt)
-
-	if err == sql.ErrNoRows {
-		return nil, fmt.Errorf("No existe tarea con id = %v", id)
-	}
+	err := store.db.GetContext(ctx, &taskItem, "SELECT id, name, status, created_at FROM tasks WHERE id = ?", id)
 
 	if err != nil {
-		return nil, fmt.Errorf("Error obteniendo tarea\n")
+		return nil, err
 	}
 
 	return &taskItem, nil
