@@ -13,11 +13,11 @@ func workerPool() {
 	var wg sync.WaitGroup
 	ordersChan := make(chan Order, 100)
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		wg.Add(1)
-		workerId := i + 1
+		workerID := i + 1
 		go func(ordersChan <-chan Order) {
-			ordersConsumer(&wg, ordersChan, workerId)
+			ordersConsumer(&wg, ordersChan, workerID)
 		}(ordersChan)
 	}
 
@@ -35,8 +35,7 @@ func ordersConsumer(wg *sync.WaitGroup, orderChan <-chan Order, worker int) {
 }
 
 func ordersProducer(ordersChan chan<- Order) {
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		ordersChan <- Order{ID: i + 1}
 	}
-
 }
