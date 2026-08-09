@@ -16,24 +16,20 @@ func bank() {
 
 	myAccount := Account{Name: "My Account", Balance: 1000}
 
-	for i := 0; i < 500; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+	for range 500 {
+		wg.Go(func() {
 			mu.Lock()
 			defer mu.Unlock()
 			addBalance(&myAccount, 10)
-		}()
+		})
 	}
 
-	for i := 0; i < 300; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+	for range 300 {
+		wg.Go(func() {
 			mu.Lock()
 			defer mu.Unlock()
 			withdrawBalance(&myAccount, 5)
-		}()
+		})
 	}
 
 	wg.Wait()
