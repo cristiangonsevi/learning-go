@@ -74,3 +74,7 @@ func validate(cfg *Config) error {
 	}
 	return fmt.Errorf("[ERROR] %v", strings.Join(errors, ","))
 }
+
+func ConnectionString() string {
+	return ""
+}
