@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 	"math/rand"
-	"net/http"
 	"url-shortener/internal/config"
+	"url-shortener/internal/router"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,19 +13,16 @@ const BASE_URL = "crisego.com"
 
 func main() {
 
-	config, err := config.Load()
+	_, err := config.Load()
 
 	if err != nil {
 		log.Fatal("Error loading env configuration", err)
 	}
 
-	log.Println("configuration ", config)
+	r := router.New()
 
-	router := gin.Default()
+	r.Run(":8080")
 
-	router.GET("/short", generateShortUrl)
-
-	http.ListenAndServe(":8080", router)
 }
 
 func generateShortUrl(c *gin.Context) {
