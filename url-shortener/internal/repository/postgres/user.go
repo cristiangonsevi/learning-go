@@ -1,8 +1,11 @@
 package postgres
 
-import "context"
+import (
+	"context"
+	"url-shortener/internal/model"
+)
 
-func (r *PostgresStorage) CreateUser(ctx context.Context) (string, error) {
+func (r *PostgresStorage) CreateUser(ctx context.Context, user model.CreateUserRequest) (string, error) {
 	r.db.ExecContext(ctx, "")
 	return "", nil
 }

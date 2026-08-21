@@ -1,7 +1,10 @@
 package repository
 
-import "context"
+import (
+	"context"
+	"url-shortener/internal/model"
+)
 
 type UserStorageInterface interface {
-	CreateUser(ctx context.Context) (string, error)
+	CreateUser(ctx context.Context, user model.CreateUserRequest) (string, error)
 }

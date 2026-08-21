@@ -14,6 +14,7 @@ type Config struct {
 	DBPass    string
 	DBPort    int
 	DBSSLMode string
+	JWTSecret string
 }
 
 func Load() (*Config, error) {
@@ -25,6 +26,7 @@ func Load() (*Config, error) {
 		DBPass:    getEnvStr("DB_PASS", ""),
 		DBPort:    getEnvInt("DB_PORT", 5432),
 		DBSSLMode: getEnvStr("DB_SSL_MODE", "disable"),
+		JWTSecret: getEnvStr("JWT_SECRET", ""),
 	}
 
 	err := validate(config)
@@ -82,6 +84,11 @@ func validate(cfg *Config) error {
 	if cfg.DBPort <= 2000 || cfg.DBPort >= 65555 {
 		errors = append(errors, "DB_PORT is out of range")
 	}
+
+	if cfg.JWTSecret == "" {
+		errors = append(errors, "JWT_SECRET is required")
+	}
+
 	if len(errors) == 0 {
 		return nil
 	}
