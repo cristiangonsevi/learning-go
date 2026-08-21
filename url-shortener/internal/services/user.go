@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"time"
 	"url-shortener/internal/model"
 	"url-shortener/internal/repository"
 	"url-shortener/internal/services/jwt"
@@ -50,6 +51,12 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 		return nil, err
 	}
 
+	refreshToken, err := jwt.GenerateRefreshToken(payload, (time.Now().Add(360 * time.Hour)))
+
+	if err != nil {
+		return nil, err
+	}
+
 	_, err = r.repo.CreateUser(ctx, user)
 
 	if err != nil {
@@ -63,7 +70,7 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 			Email: newUser.Email,
 		},
 		Token:        token,
-		RefreshToken: token,
+		RefreshToken: refreshToken,
 	}
 
 	return response, nil

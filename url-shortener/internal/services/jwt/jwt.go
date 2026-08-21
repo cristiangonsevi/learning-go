@@ -33,4 +33,13 @@ func GenerateJWT(data map[string]interface{}) (string, error) {
 
 }
 
+func GenerateRefreshToken(payload map[string]interface{}, expiresAt time.Time) (string, error) {
+	payload["iat"] = expiresAt
+	token, err := GenerateJWT(payload)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}
+
 func validateJWT() {}
