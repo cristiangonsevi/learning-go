@@ -69,8 +69,10 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 			Name:  newUser.Name,
 			Email: newUser.Email,
 		},
-		Token:        token,
-		RefreshToken: refreshToken,
+		JWT: model.TokenResponse{
+			Token:        token,
+			RefreshToken: token,
+		},
 	}
 
 	return response, nil
