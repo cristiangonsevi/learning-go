@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"url-shortener/internal/config"
@@ -15,17 +14,30 @@ import (
 
 func main() {
 
-	config, err := config.Load()
-
-	userRepo, _ := postgres.New(config.DBName)
-	userService := services.NewUserService(userRepo)
-	userHandler := handler.NewAuthHandler(userService)
-
-	fmt.Println(userHandler)
+	cfg, err := config.Load()
 
 	if err != nil {
-		log.Fatal("Error loading env configuration", err)
+		log.Fatal("Error loading env vars: ", err)
 	}
+
+	connStr := config.ConnectionString(cfg)
+
+	repo, err := postgres.New(connStr)
+
+	if err != nil {
+		log.Fatal("Error initializating repository")
+	}
+
+	err = repo.TestConnection()
+
+	if err != nil {
+		log.Fatal("Error connecting to database")
+	}
+
+	log.Println("[DATABASE] Online")
+
+	userService := services.NewUserService(repo)
+	userHandler := handler.NewAuthHandler(userService)
 
 	r := router.New(userHandler)
 

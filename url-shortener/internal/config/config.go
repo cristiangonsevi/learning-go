@@ -8,21 +8,23 @@ import (
 )
 
 type Config struct {
-	DBHost string
-	DBName string
-	DBUser string
-	DBPass string
-	DBPort int
+	DBHost    string
+	DBName    string
+	DBUser    string
+	DBPass    string
+	DBPort    int
+	DBSSLMode string
 }
 
 func Load() (*Config, error) {
 
 	config := &Config{
-		DBHost: getEnvStr("DB_HOST", "localhost"),
-		DBName: getEnvStr("DB_NAME", ""),
-		DBUser: getEnvStr("DB_USER", ""),
-		DBPass: getEnvStr("DB_PASS", ""),
-		DBPort: getEnvInt("DB_PORT", 5432),
+		DBHost:    getEnvStr("DB_HOST", "localhost"),
+		DBName:    getEnvStr("DB_NAME", ""),
+		DBUser:    getEnvStr("DB_USER", ""),
+		DBPass:    getEnvStr("DB_PASS", ""),
+		DBPort:    getEnvInt("DB_PORT", 5432),
+		DBSSLMode: getEnvStr("DB_SSL_MODE", "disable"),
 	}
 
 	err := validate(config)
@@ -32,6 +34,17 @@ func Load() (*Config, error) {
 	}
 
 	return config, nil
+}
+
+func getEnvBool(key string, defaultValue bool) bool {
+	if envVar := os.Getenv(key); envVar != "" {
+		val, err := strconv.ParseBool(envVar)
+		if err != nil {
+			return defaultValue
+		}
+		return val
+	}
+	return defaultValue
 }
 
 func getEnvStr(key string, defaultValue string) string {
@@ -75,6 +88,6 @@ func validate(cfg *Config) error {
 	return fmt.Errorf("[ERROR] %v", strings.Join(errors, ","))
 }
 
-func ConnectionString() string {
-	return ""
+func ConnectionString(cfg *Config) string {
+	return fmt.Sprintf("host=%v dbname=%v user=%v password=%v port=%v sslmode=%v  connect_timeout=5", cfg.DBHost, cfg.DBName, cfg.DBUser, cfg.DBPass, cfg.DBPort, cfg.DBSSLMode)
 }

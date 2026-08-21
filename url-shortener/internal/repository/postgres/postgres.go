@@ -18,3 +18,11 @@ func New(connString string) (*PostgresStorage, error) {
 		db,
 	}, nil
 }
+
+func (s PostgresStorage) TestConnection() error {
+	_, err := s.db.Query("SELECT 1")
+	if err != nil {
+		return err
+	}
+	return nil
+}

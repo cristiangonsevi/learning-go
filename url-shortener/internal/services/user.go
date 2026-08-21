@@ -9,17 +9,17 @@ type UserInterface interface {
 	CreateUser(ctx context.Context) (string, error)
 }
 
-type UserSevice struct {
+type UserService struct {
 	repo repository.UserStorageInterface
 }
 
-func NewUserService(repo repository.UserStorageInterface) *UserSevice {
-	return &UserSevice{
+func NewUserService(repo repository.UserStorageInterface) *UserService {
+	return &UserService{
 		repo,
 	}
 }
 
-func (r *UserSevice) CreateUser(ctx context.Context) (string, error) {
+func (r *UserService) CreateUser(ctx context.Context) (string, error) {
 	r.repo.CreateUser(ctx)
 	return "", nil
 }
