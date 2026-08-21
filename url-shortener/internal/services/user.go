@@ -51,7 +51,7 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 		return nil, err
 	}
 
-	refreshToken, err := jwt.GenerateRefreshToken(payload, (time.Now().Add(360 * time.Hour)))
+	refreshToken, err := jwt.GenerateRefreshToken(payload, (time.Now().Add(360 * time.Hour).Unix()))
 
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 		},
 		JWT: model.TokenResponse{
 			Token:        token,
-			RefreshToken: token,
+			RefreshToken: refreshToken,
 		},
 	}
 
