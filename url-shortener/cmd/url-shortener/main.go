@@ -1,32 +1,40 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"url-shortener/internal/config"
+	"url-shortener/internal/handler"
+	"url-shortener/internal/repository/postgres"
 	"url-shortener/internal/router"
+	"url-shortener/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
 
-const BASE_URL = "crisego.com"
-
 func main() {
 
-	_, err := config.Load()
+	config, err := config.Load()
+
+	userRepo, _ := postgres.New(config.DBName)
+	userService := services.NewUserService(userRepo)
+	userHandler := handler.NewAuthHandler(userService)
+
+	fmt.Println(userHandler)
 
 	if err != nil {
 		log.Fatal("Error loading env configuration", err)
 	}
 
-	r := router.New()
+	r := router.New(userHandler)
 
 	r.Run(":8080")
 
 }
 
 func generateShortUrl(c *gin.Context) {
-	url := BASE_URL + "/" + generateCode()
+	url := "/" + generateCode()
 
 	c.JSON(200, gin.H{
 		"url": url,

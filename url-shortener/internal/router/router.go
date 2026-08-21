@@ -1,14 +1,18 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"url-shortener/internal/handler"
 
-func New() *gin.Engine {
+	"github.com/gin-gonic/gin"
+)
+
+func New(userHandler *handler.UserHandler) *gin.Engine {
 	r := gin.Default()
 
 	auth := r.Group("/api/auth")
 
 	{
-		auth.POST("/register")
+		auth.POST("/register", userHandler.CreateUserHandler)
 	}
 
 	return r
