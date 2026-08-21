@@ -31,7 +31,7 @@ func main() {
 	err = repo.TestConnection()
 
 	if err != nil {
-		log.Fatal("Error connecting to database")
+		log.Fatal("Error connecting to database", err)
 	}
 
 	log.Println("[DATABASE] Online")

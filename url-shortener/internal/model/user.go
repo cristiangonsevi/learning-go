@@ -20,8 +20,8 @@ type UserResponse struct {
 }
 
 type UserRegisterResponse struct {
-	User UserResponse `json:"user"`
-	TokenResponse
+	User UserResponse  `json:"user"`
+	JWT  TokenResponse `json:"jwt"`
 }
 
 type TokenResponse struct {
