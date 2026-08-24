@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"url-shortener/internal/model"
 	"url-shortener/internal/services"
@@ -32,9 +33,10 @@ func (h *UserHandler) CreateUserHandler(c *gin.Context) {
 	resp, err := h.userService.CreateUser(ctx, req)
 
 	if err != nil {
+		log.Println("Error creating user ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   true,
-			"message": "Error creating user",
+			"message": "Error creating user" + err.Error(),
 		})
 		return
 	}

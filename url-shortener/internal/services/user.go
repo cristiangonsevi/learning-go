@@ -57,7 +57,7 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 		return nil, err
 	}
 
-	_, err = r.repo.CreateUser(ctx, user)
+	_, err = r.repo.CreateUser(ctx, newUser)
 
 	if err != nil {
 		return nil, err

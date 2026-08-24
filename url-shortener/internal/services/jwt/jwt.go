@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -18,8 +17,6 @@ func GenerateJWT(data map[string]interface{}) (string, error) {
 	for k, v := range data {
 		claims[k] = v
 	}
-
-	fmt.Println("data ", claims, secret)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 

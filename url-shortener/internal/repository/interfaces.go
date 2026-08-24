@@ -6,5 +6,5 @@ import (
 )
 
 type UserStorageInterface interface {
-	CreateUser(ctx context.Context, user model.CreateUserRequest) (string, error)
+	CreateUser(ctx context.Context, user model.User) (string, error)
 }
