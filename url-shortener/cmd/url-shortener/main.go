@@ -39,7 +39,10 @@ func main() {
 	userService := services.NewUserService(repo)
 	userHandler := handler.NewAuthHandler(userService)
 
-	r := router.New(userHandler)
+	urlService := services.NewURLService(repo)
+	urlHandler := handler.NewURLHandler(urlService)
+
+	r := router.New(userHandler, urlHandler)
 
 	r.Run(":8080")
 

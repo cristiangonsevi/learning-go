@@ -1,34 +1,29 @@
 package handler
 
 import (
+	"context"
 	"net/http"
-	"time"
 	"url-shortener/internal/model"
 
 	"github.com/gin-gonic/gin"
 )
 
 type URLServiceInterface interface {
-	Create(CreateURLRequest) (model.URL, error)
+	CreateURL(ctx context.Context, params model.CreateURLParams)
 }
 
 type URLHandlerStruct struct {
 	urlService URLServiceInterface
 }
 
-type CreateURLRequest struct {
-	URL       string
-	ExpiresAt time.Time
-}
-
-func NewURLService(urlService URLServiceInterface) *URLHandlerStruct {
+func NewURLHandler(urlService URLServiceInterface) *URLHandlerStruct {
 	return &URLHandlerStruct{
 		urlService,
 	}
 }
 
-func (h *URLHandlerStruct) CreateURLHanbler(c *gin.Context) {
-	var req CreateURLRequest
+func (h *URLHandlerStruct) CreateURLHandler(c *gin.Context) {
+	var req model.CreateURLParams
 
 	err := c.ShouldBindBodyWithJSON(&req)
 	if err != nil {
@@ -39,7 +34,7 @@ func (h *URLHandlerStruct) CreateURLHanbler(c *gin.Context) {
 		})
 	}
 
-	h.urlService.Create(req)
+	h.urlService.CreateURL(c.Request.Context(), req)
 
 	c.JSON(http.StatusOK, gin.H{
 		"error":   false,

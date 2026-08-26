@@ -9,3 +9,8 @@ type URL struct {
 	ExpiresAt time.Time
 	CreatedAt time.Time
 }
+
+type CreateURLParams struct {
+	URL       string
+	ExpiresAt time.Time
+}

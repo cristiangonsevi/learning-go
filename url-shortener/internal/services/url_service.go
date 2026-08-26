@@ -1,7 +1,12 @@
 package services
 
+import (
+	"context"
+	"url-shortener/internal/model"
+)
+
 type URLRepositoryInterface interface {
-	CreateURL()
+	CreateURL(ctx context.Context, params model.CreateURLParams)
 }
 
 type URLServiceStruct struct {
@@ -15,4 +20,4 @@ func NewURLService(urlRepo URLRepositoryInterface) *URLServiceStruct {
 	}
 }
 
-func (s *URLServiceStruct) CreateURL() {}
+func (s *URLServiceStruct) CreateURL(ctx context.Context, params model.CreateURLParams) {}
