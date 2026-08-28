@@ -7,7 +7,7 @@ import (
 )
 
 type URLRepositoryInterface interface {
-	CreateURL(ctx context.Context, params model.CreateURLParams)
+	CreateURL(ctx context.Context, params model.URL)
 }
 
 type URLServiceStruct struct {

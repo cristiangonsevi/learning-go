@@ -18,7 +18,7 @@ func (r *PostgresStorage) CreateUser(ctx context.Context, user model.User) (stri
 		return "", fmt.Errorf("Email already exist")
 	}
 
-	_, err = r.db.NamedExecContext(ctx, "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)", user)
+	_, err = r.db.NamedExecContext(ctx, "INSERT INTO users (id, name, email, password) VALUES (:id, :name, :email, :password)", user)
 
 	if err != nil {
 		return "", err
