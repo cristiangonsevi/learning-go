@@ -58,4 +58,5 @@ func (h *UserHandler) LoginUserHandler(c *gin.Context) {
 		})
 		return
 	}
+	h.userService.LoginUser(c.Request.Context(), req)
 }

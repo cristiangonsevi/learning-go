@@ -12,7 +12,8 @@ import (
 )
 
 type UserInterface interface {
-	CreateUser(ctx context.Context, user model.CreateUserRequest) (*model.UserRegisterResponse, error)
+	CreateUser(ctx context.Context, user model.CreateUserRequest) (*model.UserAuthResponse, error)
+	LoginUser(ctx context.Context, params model.LoginRequest) (*model.UserAuthResponse, error)
 }
 
 type UserService struct {
@@ -25,7 +26,7 @@ func NewUserService(repo repository.UserStorageInterface) *UserService {
 	}
 }
 
-func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserRequest) (*model.UserRegisterResponse, error) {
+func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserRequest) (*model.UserAuthResponse, error) {
 
 	hashedPassword, err := argon2id.CreateHash(user.Password, argon2id.DefaultParams)
 
@@ -63,7 +64,7 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 		return nil, err
 	}
 
-	response := &model.UserRegisterResponse{
+	response := &model.UserAuthResponse{
 		User: model.UserResponse{
 			ID:    newUser.ID,
 			Name:  newUser.Name,
@@ -76,4 +77,8 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 	}
 
 	return response, nil
+}
+
+func (r *UserService) LoginUser(ctx context.Context, params model.LoginRequest) (*model.UserAuthResponse, error) {
+	return nil, nil
 }

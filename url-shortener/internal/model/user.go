@@ -19,7 +19,7 @@ type UserResponse struct {
 	Email string `json:"email"`
 }
 
-type UserRegisterResponse struct {
+type UserAuthResponse struct {
 	User UserResponse  `json:"user"`
 	JWT  TokenResponse `json:"jwt"`
 }
