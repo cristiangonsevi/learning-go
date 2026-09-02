@@ -4,6 +4,7 @@ import (
 	"context"
 	"math/rand"
 	"url-shortener/internal/model"
+	"uuid"
 )
 
 type URLRepositoryInterface interface {
@@ -22,14 +23,28 @@ func NewURLService(urlRepo URLRepositoryInterface) *URLServiceStruct {
 }
 
 func (s *URLServiceStruct) CreateURL(ctx context.Context, params model.CreateURLParams) {
-	_, _ = GenerateShortURL(params.URL)
+	shortUrl := GenerateShortURL(params.URL)
+
+	url := model.URL{
+		ID:          uuid.NewV7().String(),
+		URL:         params.URL,
+		ShortURL:    shortUrl,
+		Title:       params.Title,
+		Description: params.Description,
+		ExpiresAt:   params.ExpiresAt,
+		UserID:      params.UserID,
+		IsActive:    params.IsActive,
+	}
+
+	s.repo.CreateURL(ctx, url)
+
 }
 
-func GenerateShortURL(url string) (string, string) {
+func GenerateShortURL(url string) string {
 	shortURL := make([]byte, 6)
 	base62 := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	for idx := range 6 {
 		shortURL[idx] = base62[rand.Intn(len(base62))]
 	}
-	return url, string(shortURL)
+	return string(shortURL)
 }
