@@ -18,6 +18,10 @@ type URL struct {
 }
 
 type CreateURLParams struct {
-	URL       string
-	ExpiresAt time.Time
+	URL         string
+	Title       string
+	Description string
+	UserID      string
+	IsActive    bool
+	ExpiresAt   *time.Time
 }
