@@ -47,3 +47,15 @@ func (h *UserHandler) CreateUserHandler(c *gin.Context) {
 		"data":    resp,
 	})
 }
+
+func (h *UserHandler) LoginUserHandler(c *gin.Context) {
+	var req model.LoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   true,
+			"message": "Error parsing response",
+			"errors":  transalateErrors(err),
+		})
+		return
+	}
+}
