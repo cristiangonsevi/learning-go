@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"time"
 	"url-shortener/internal/model"
 	"url-shortener/internal/repository"
@@ -80,5 +81,51 @@ func (r *UserService) CreateUser(ctx context.Context, user model.CreateUserReque
 }
 
 func (r *UserService) LoginUser(ctx context.Context, params model.LoginRequest) (*model.UserAuthResponse, error) {
-	return nil, nil
+
+	user, err := r.repo.LoginUser(ctx, params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	match, err := argon2id.ComparePasswordAndHash(params.Password, user.Password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !match {
+		return nil, fmt.Errorf("Error: Bad credentials")
+	}
+
+	payload := map[string]interface{}{
+		"uuid":  user.ID,
+		"email": user.Email,
+	}
+
+	token, err := jwt.GenerateJWT(payload)
+
+	if err != nil {
+		return nil, err
+	}
+
+	refreshToken, err := jwt.GenerateRefreshToken(payload, (time.Now().Add(360 * time.Hour).Unix()))
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.UserAuthResponse{
+		User: model.UserResponse{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+		},
+		JWT: model.TokenResponse{
+			Token:        token,
+			RefreshToken: refreshToken,
+		},
+	}
+
+	return response, nil
 }

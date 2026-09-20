@@ -40,3 +40,19 @@ func (s *PostgresStorage) GetUserByEmail(ctx context.Context, email string) (*mo
 	}
 	return &user, nil
 }
+
+func (s *PostgresStorage) LoginUser(ctx context.Context, params model.LoginRequest) (*model.LoginResponse, error) {
+	var user model.LoginResponse
+
+	err := s.db.GetContext(ctx, user, "SELECT id, name, email, password FROM users WHERE email = $1", params.Email)
+
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("Login fail.")
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
