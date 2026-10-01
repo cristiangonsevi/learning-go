@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/fatih/color"
@@ -11,9 +10,8 @@ var availableProfiles []string
 
 func main() {
 	var profile string = "qa"
-	fmt.Println("HOlallllllll")
 	logger.Debug("Hola debug")
-	config, err := loadConfigFile("/home/cg/PROJECTS/PERSONAL/golang/learning/portbridge/config.toml")
+	config, err := loadConfigFile("config.toml")
 	if err != nil {
 		log.Fatal("Error loading configuration ", err)
 	}

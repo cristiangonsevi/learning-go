@@ -26,7 +26,7 @@ type Profile struct {
 }
 
 type Config struct {
-	Profiles []Profile `toml:"profiles"`
+	Profiles map[string]Profile `toml:"profiles"`
 }
 
 func validateProfile(profile string, config *Config) error {
@@ -40,12 +40,12 @@ func validateProfile(profile string, config *Config) error {
 }
 
 func loadProfile(profile string, config *Config) Profile {
-	for _, p := range config.Profiles {
-		if p.Name == profile {
-			return p
-		}
+	p, ok := config.Profiles[profile]
+	if !ok {
+		fmt.Errorf("Profile not exit")
+		return Profile{}
 	}
-	return Profile{}
+	return p
 }
 
 func loadConfigFile(path string) (*Config, error) {
@@ -59,8 +59,8 @@ func loadConfigFile(path string) (*Config, error) {
 
 func getAvailableProfiles(config *Config) []string {
 	var profilesName []string
-	for _, p := range config.Profiles {
-		profilesName = append(profilesName, p.Name)
+	for k := range config.Profiles {
+		profilesName = append(profilesName, k)
 	}
 	return profilesName
 }
