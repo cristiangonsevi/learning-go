@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"strings"
 
 	"github.com/BurntSushi/toml"
@@ -27,6 +29,54 @@ type Profile struct {
 
 type Config struct {
 	Profiles map[string]Profile `toml:"profiles"`
+}
+
+func initDefaultConfig() {
+	userConfigDir, err := os.UserConfigDir()
+	if err != nil {
+		log.Println("Error loading default config directory", err)
+	}
+	defaultLocation := userConfigDir + "/portbridge/config.toml"
+	_, err = os.ReadFile(defaultLocation)
+	if err == nil {
+		color.Yellow("Loading default configuration file %s\n", defaultLocation)
+		return
+	}
+
+	f, err := os.Create(defaultLocation)
+	if err != nil {
+		log.Fatal("Error creating default configuration file ", err)
+	}
+
+	sampleConfiguration := `# PortBridge — configuración de ejemplo.
+# Edita este archivo y luego corre: portbridge <perfil>
+
+[profiles.sample]
+user       = "your_user"
+host       = "your_host:22"
+knownhost  = "~/.ssh/known_hosts"
+keyfile    = "~/.ssh/id_ed25519"
+passphrase = ""
+
+[[profiles.sample.services]]
+name       = "redis"
+remotehost = "localhost"
+remoteport = 6379
+localport  = 6379
+enabled    = true
+
+[[profiles.sample.services]]
+name       = "postgres"
+remotehost = "localhost"
+remoteport = 5432
+localport  = 5432
+enabled    = true
+`
+	_, err = f.WriteString(sampleConfiguration)
+	if err != nil {
+		log.Fatal("Error writing default configuration to file ", err)
+	}
+	color.Green("Default configuration file created in %v\n%v", defaultLocation, sampleConfiguration)
 }
 
 func validateProfile(profile string, config *Config) error {
