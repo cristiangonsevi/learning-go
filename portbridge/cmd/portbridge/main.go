@@ -7,7 +7,9 @@ import (
 	"net"
 	"os"
 	"strings"
+	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/fatih/color"
 
 	"golang.org/x/crypto/ssh"
@@ -17,52 +19,56 @@ import (
 var availableProfiles []string
 
 type Service struct {
-	Name       string
-	RemotePort int
-	LocalPort  int
-	Enabled    bool
+	Name       string `toml:"name"`
+	RemotePort int    `toml:"remoteport"`
+	LocalPort  int    `toml:"localport"`
+	Enabled    bool   `toml:"enabled"`
 }
 type Profile struct {
-	Name       string
-	User       string
-	Host       string
-	KnownHost  string
-	KeyFile    string
-	PassPhrase string
-	Password   string
-	Services   []Service
+	Name       string    `toml:"name"`
+	User       string    `toml:"user"`
+	Host       string    `toml:"host"`
+	KnownHost  string    `toml:"knownhost"`
+	KeyFile    string    `toml:"keyfile"`
+	PassPhrase string    `toml:"passphrase"`
+	Password   string    `toml:"password"`
+	Services   []Service `toml:"services"`
 }
 
 type Config struct {
-	Profiles []Profile
+	Profiles []Profile `toml:"profiles"`
 }
 
 func main() {
-	var profile string = "qa2"
-	config := Config{
-		Profiles: []Profile{{
-			Name:       "profile",
-			User:       "user",
-			Host:       "localhost:port",
-			KnownHost:  "known_hosts",
-			KeyFile:    "datawagon_vps",
-			PassPhrase: "passphrase",
-			Password:   "",
-			Services: []Service{{
-				Name:       "Redis",
-				RemotePort: 6379,
-				LocalPort:  8000,
-				Enabled:    false,
-			}, {
-				Name:       "Postgres",
-				RemotePort: 5432,
-				LocalPort:  8001,
-				Enabled:    true,
-			}},
-		}},
+	var profile string = "qa"
+	config, err := loadConfigFile("/home/cg/PROJECTS/PERSONAL/golang/learning/portbridge/config.toml")
+	if err != nil {
+		log.Fatal("Error loading configuration ", err)
 	}
+	// config := Config{
+	// 	Profiles: []Profile{{
+	// 		Name:       "profile",
+	// 		User:       "user",
+	// 		Host:       "localhost:port",
+	// 		KnownHost:  "known_hosts",
+	// 		KeyFile:    "datawagon_vps",
+	// 		PassPhrase: "passphrase",
+	// 		Password:   "",
+	// 		Services: []Service{{
+	// 			Name:       "Redis",
+	// 			RemotePort: 6379,
+	// 			LocalPort:  8000,
+	// 			Enabled:    false,
+	// 		}, {
+	// 			Name:       "Postgres",
+	// 			RemotePort: 5432,
+	// 			LocalPort:  8001,
+	// 			Enabled:    true,
+	// 		}},
+	// 	}},
+	// }
 
-	err := validateProfile(profile, config)
+	err = validateProfile(profile, config)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,6 +80,7 @@ func main() {
 		log.Fatal("Error creating client ", err)
 	}
 	defer client.Close()
+	go keepAlive(client)
 	for _, s := range p.Services {
 		if !s.Enabled {
 			color.Yellow("⚙️  %s disabled in config file\n", s.Name)
@@ -86,7 +93,7 @@ func main() {
 			color.Red("✗ %s failed: %v\n", s.Name, err)
 			continue
 		}
-		color.Green("⚙️  %s started on port %d\n", s.Name, s.LocalPort)
+		color.Green("⚙️  %s started on port %d -> %d\n", s.Name, s.LocalPort, s.RemotePort)
 	}
 	select {}
 }
@@ -157,6 +164,7 @@ func startTunnel(client *ssh.Client, service Service, ready chan<- error) {
 		remoteAddres := fmt.Sprintf("localhost:%d", service.RemotePort)
 		remoteConn, err := client.Dial("tcp", remoteAddres)
 		if err != nil {
+			log.Println("Error remote conncetion ", err)
 			localConn.Close()
 			continue
 		}
@@ -172,7 +180,7 @@ func startTunnel(client *ssh.Client, service Service, ready chan<- error) {
 	}
 }
 
-func validateProfile(profile string, config Config) error {
+func validateProfile(profile string, config *Config) error {
 	availableProfiles := getAvailableProfiles(config)
 	for _, p := range availableProfiles {
 		if p == profile {
@@ -182,7 +190,7 @@ func validateProfile(profile string, config Config) error {
 	return fmt.Errorf(color.RedString("Profile %s not exist, available profiles: \n%v", profile, strings.Join(availableProfiles, "\n")))
 }
 
-func getAvailableProfiles(config Config) []string {
+func getAvailableProfiles(config *Config) []string {
 	var profilesName []string
 	for _, p := range config.Profiles {
 		profilesName = append(profilesName, p.Name)
@@ -190,11 +198,33 @@ func getAvailableProfiles(config Config) []string {
 	return profilesName
 }
 
-func loadProfile(profile string, config Config) Profile {
+func loadProfile(profile string, config *Config) Profile {
 	for _, p := range config.Profiles {
 		if p.Name == profile {
 			return p
 		}
 	}
 	return Profile{}
+}
+
+func loadConfigFile(path string) (*Config, error) {
+	var config *Config
+	_, err := toml.DecodeFile(path, &config)
+	if err != nil {
+		return nil, err
+	}
+	return config, nil
+}
+
+func keepAlive(client *ssh.Client) {
+	ticker := time.NewTicker(45 * time.Second)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		_, _, err := client.SendRequest("keepalive@openssh.com", true, nil)
+		if err != nil {
+			return
+		}
+		log.Println("Heartbeat")
+	}
 }

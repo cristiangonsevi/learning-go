@@ -3,6 +3,7 @@ module portbridge
 go 1.27.1
 
 require (
+	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
