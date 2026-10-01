@@ -45,28 +45,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading configuration ", err)
 	}
-	// config := Config{
-	// 	Profiles: []Profile{{
-	// 		Name:       "profile",
-	// 		User:       "user",
-	// 		Host:       "localhost:port",
-	// 		KnownHost:  "known_hosts",
-	// 		KeyFile:    "datawagon_vps",
-	// 		PassPhrase: "passphrase",
-	// 		Password:   "",
-	// 		Services: []Service{{
-	// 			Name:       "Redis",
-	// 			RemotePort: 6379,
-	// 			LocalPort:  8000,
-	// 			Enabled:    false,
-	// 		}, {
-	// 			Name:       "Postgres",
-	// 			RemotePort: 5432,
-	// 			LocalPort:  8001,
-	// 			Enabled:    true,
-	// 		}},
-	// 	}},
-	// }
 
 	err = validateProfile(profile, config)
 	if err != nil {
@@ -225,6 +203,5 @@ func keepAlive(client *ssh.Client) {
 		if err != nil {
 			return
 		}
-		log.Println("Heartbeat")
 	}
 }
