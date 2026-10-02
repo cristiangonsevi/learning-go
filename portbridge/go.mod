@@ -1,6 +1,6 @@
 module github.com/cristiangonsevi/learning-go/portbridge
 
-go 1.27.1
+go 1.26
 
 require (
 	github.com/BurntSushi/toml v1.6.0
