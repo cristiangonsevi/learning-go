@@ -47,7 +47,7 @@ var upCommand = &cobra.Command{
 		}
 
 		p := config.LoadProfile(profile, cfg)
-		color.Blue("✅ Profile %s loaded", profile)
+		color.Blue("ℹ Connecting profile: %s", profile)
 		client, err := ssh.ClientSSH(p)
 		if err != nil {
 			log.Fatal("Error creating client ", err)
@@ -70,7 +70,7 @@ var upCommand = &cobra.Command{
 				color.Red("✗ %s failed: %v\n", s.Name, err)
 				continue
 			}
-			color.Green("⚙️  %s started on port %d -> %d\n", s.Name, s.LocalPort, s.RemotePort)
+			color.Cyan("• Opening tunnel %s: localhost:%d -> %d", s.Name, s.LocalPort, s.RemotePort)
 		}
 		<-cmd.Context().Done()
 	},
