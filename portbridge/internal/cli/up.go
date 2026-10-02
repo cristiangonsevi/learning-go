@@ -2,6 +2,7 @@ package cli
 
 import (
 	"log"
+	"strings"
 
 	"portbridge/internal/config"
 	"portbridge/internal/logger"
@@ -16,11 +17,22 @@ var upCommand = &cobra.Command{
 	Use:   "up <profile>",
 	Short: "Activate an SSH tunnel profile",
 	Long:  `Activate an SSH tunnel profile and establish connections to its configured services.`,
+	Example: `
+	pb up qa
+	pb up qa --services redis,postgres
+	pb up qa -s redis,postgres`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			cmd.Help()
 			return
 		}
+
+		pickedServices, err := cmd.Flags().GetString("services")
+		if err != nil {
+			logger.Error("Error getting services flag %v", err)
+			return
+		}
+
 		profile := args[0]
 		cfg, err := config.LoadConfigFile()
 		if err != nil {
@@ -43,7 +55,11 @@ var upCommand = &cobra.Command{
 		defer client.Close()
 		go ssh.KeepAlive(client)
 		for _, s := range p.Services {
-			if !s.Enabled {
+			matchService := strings.Contains(strings.ToLower(pickedServices), strings.ToLower(s.Name))
+			if pickedServices != "" && !matchService {
+				continue
+			}
+			if !s.Enabled && !matchService {
 				color.Yellow("⚙️  %s disabled in config file\n", s.Name)
 				continue
 			}
@@ -61,5 +77,6 @@ var upCommand = &cobra.Command{
 }
 
 func init() {
+	upCommand.Flags().StringP("services", "s", "", "Comma-separated service names, e.g. redis,postgres")
 	rootCommand.AddCommand(upCommand)
 }
