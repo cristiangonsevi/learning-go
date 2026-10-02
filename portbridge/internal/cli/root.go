@@ -3,8 +3,8 @@ package cli
 import (
 	"context"
 
-	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/config"
-	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/logger"
+	"github.com/cristiangonsevi/learning-go/portbridge/internal/config"
+	"github.com/cristiangonsevi/learning-go/portbridge/internal/logger"
 
 	"github.com/spf13/cobra"
 )

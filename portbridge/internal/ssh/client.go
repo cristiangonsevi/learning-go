@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/config"
+	"github.com/cristiangonsevi/learning-go/portbridge/internal/config"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/knownhosts"
