@@ -1,4 +1,4 @@
-package main
+package tunnel
 
 import (
 	"fmt"
@@ -6,10 +6,12 @@ import (
 	"log"
 	"net"
 
+	"portbridge/internal/config"
+
 	"golang.org/x/crypto/ssh"
 )
 
-func startTunnel(client *ssh.Client, service Service, ready chan<- error) {
+func StartTunnel(client *ssh.Client, service config.Service, ready chan<- error) {
 	localAddress := fmt.Sprintf("localhost:%d", service.LocalPort)
 	listener, err := net.Listen("tcp", localAddress)
 	if err != nil {

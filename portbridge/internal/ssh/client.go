@@ -1,15 +1,17 @@
-package main
+package ssh
 
 import (
 	"fmt"
 	"os"
 	"time"
 
+	"portbridge/internal/config"
+
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/knownhosts"
 )
 
-func keepAlive(client *ssh.Client) {
+func KeepAlive(client *ssh.Client) {
 	ticker := time.NewTicker(45 * time.Second)
 	defer ticker.Stop()
 
@@ -21,7 +23,7 @@ func keepAlive(client *ssh.Client) {
 	}
 }
 
-func clientSSH(profile Profile) (*ssh.Client, error) {
+func ClientSSH(profile config.Profile) (*ssh.Client, error) {
 	hostKeyCallback, err := knownhosts.New(profile.KnownHost)
 	if err != nil {
 		return nil, err
