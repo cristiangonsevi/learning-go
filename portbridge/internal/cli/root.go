@@ -10,7 +10,7 @@ import (
 )
 
 var rootCommand = &cobra.Command{
-	Use:   "pl",
+	Use:   "pb",
 	Short: "Create SSH tunnels for local development",
 	Long:  "Create secure SSH tunnels to access remote services from your local environment without exposing them to the public internet.",
 	Run: func(cmd *cobra.Command, args []string) {

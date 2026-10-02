@@ -21,6 +21,6 @@ var initCommand = &cobra.Command{
 }
 
 func init() {
-	initCommand.Flags().BoolP("force", "f", false, "Force recreationg of sample configuration")
+	initCommand.Flags().BoolP("force", "f", false, "Force recreation of sample configuration")
 	rootCommand.AddCommand(initCommand)
 }

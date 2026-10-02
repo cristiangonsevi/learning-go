@@ -15,7 +15,7 @@ import (
 
 var listCommand = &cobra.Command{
 	Use:   "list",
-	Short: "List commando to display available configured profiles",
+	Short: "List available configured profiles",
 	Run: func(cmd *cobra.Command, args []string) {
 		printProfiles()
 	},
