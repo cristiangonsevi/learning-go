@@ -47,7 +47,7 @@ var upCommand = &cobra.Command{
 		}
 
 		p := config.LoadProfile(profile, cfg)
-		color.Blue("ℹ Connecting profile: %s", profile)
+		color.Cyan("ℹ Connecting to profile: %s\n", profile)
 		client, err := ssh.ClientSSH(p)
 		if err != nil {
 			log.Fatal("Error creating client ", err)
@@ -60,9 +60,10 @@ var upCommand = &cobra.Command{
 				continue
 			}
 			if !s.Enabled && !matchService {
-				color.Yellow("⚙️  %s disabled in config file\n", s.Name)
+				color.Yellow("⚠ %s skipped (disabled in config)\n", s.Name)
 				continue
 			}
+
 			ready := make(chan error, 1)
 			go tunnel.StartTunnel(client, s, ready)
 
@@ -70,7 +71,9 @@ var upCommand = &cobra.Command{
 				color.Red("✗ %s failed: %v\n", s.Name, err)
 				continue
 			}
-			color.Cyan("• Opening tunnel %s: localhost:%d -> %d", s.Name, s.LocalPort, s.RemotePort)
+
+			color.Green("✓ %s active: localhost:%d → remote:%d\n",
+				s.Name, s.LocalPort, s.RemotePort)
 		}
 		<-cmd.Context().Done()
 	},
