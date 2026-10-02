@@ -1,4 +1,4 @@
-module portbridge
+module github.com/cristiangonsevi/learning-go/portbridge/cmd/pb
 
 go 1.27.1
 

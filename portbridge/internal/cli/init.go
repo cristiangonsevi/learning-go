@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"portbridge/internal/config"
-	"portbridge/internal/logger"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/config"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/logger"
 
 	"github.com/spf13/cobra"
 )

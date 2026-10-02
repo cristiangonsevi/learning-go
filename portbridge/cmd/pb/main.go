@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/signal"
 
-	"portbridge/internal/cli"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/cli"
 )
 
 var availableProfiles []string

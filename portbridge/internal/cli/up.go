@@ -4,10 +4,10 @@ import (
 	"log"
 	"strings"
 
-	"portbridge/internal/config"
-	"portbridge/internal/logger"
-	"portbridge/internal/ssh"
-	"portbridge/internal/tunnel"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/config"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/logger"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/ssh"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/tunnel"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"

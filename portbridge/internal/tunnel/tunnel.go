@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	"portbridge/internal/config"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/config"
 
 	"golang.org/x/crypto/ssh"
 )

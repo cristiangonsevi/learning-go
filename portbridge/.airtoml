@@ -2,7 +2,7 @@ root = "."
 tmp_dir = "tmp"
 [build]
   bin = "tmp/main"
-  cmd = "go build -o ./tmp/main ./cmd/portbridge"
+  cmd = "go build -o ./tmp/main ./cmd/pb"
   delay = 1000
   exclude_dir = ["tmp", "vendor"]
   include_ext = ["go", "env"]

@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"portbridge/internal/logger"
+	"github.com/cristiangonsevi/learning-go/portbridge/cmd/pb/internal/logger"
 
 	"github.com/BurntSushi/toml"
 	"github.com/fatih/color"
